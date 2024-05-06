@@ -1,5 +1,5 @@
 use poise::serenity_prelude::{self as serenity, CreateMessage};
-use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
+use tokio_cron_scheduler::{Job, JobBuilder, JobScheduler, JobSchedulerError};
 use eveningbot::motd::*;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
@@ -51,8 +51,12 @@ async fn add_jobs(sched: &JobScheduler, client: &serenity::Client) -> Result<(),
         let channel = serenity::ChannelId::new(GENERAL_CHANNEL_ID);
         let mut bag = NIGHT_MOTD.to_vec();
 
-        sched.add(
-            Job::new_async("0 0 3 * * *", move |_uuid, _l| {
+        let job = JobBuilder::new()
+            .with_timezone(chrono_tz::Europe::Dublin)
+            .with_cron_job_type()
+            .with_schedule("0 0 3 * * *")
+            .unwrap()
+            .with_run_async(Box::new( move | _uuid, _l | {
                 let http = http.clone();
 
                 if bag.is_empty() {
@@ -69,8 +73,10 @@ async fn add_jobs(sched: &JobScheduler, client: &serenity::Client) -> Result<(),
                 Box::pin(async move {
                     let _ = channel.send_message(&http, message).await;
                 })
-            })?
-        ).await?;
+            }))
+            .build().unwrap();
+
+        sched.add(job).await?;
     }
 
     Ok(())

@@ -1,6 +1,6 @@
+use eveningbot::motd::*;
 use poise::serenity_prelude::{self as serenity, CreateMessage};
 use tokio_cron_scheduler::{Job, JobBuilder, JobScheduler, JobSchedulerError};
-use eveningbot::motd::*;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
@@ -17,11 +17,10 @@ async fn main() -> Result<(), JobSchedulerError> {
     Ok(())
 }
 
-
 async fn poise_setup() -> serenity::Client {
     let token = std::env::var("DISCORD_TOKEN").expect("envvar the DISCORD_TOKEN");
     let intents = serenity::GatewayIntents::non_privileged();
-    
+
     let framework = poise::Framework::<(), Error>::builder()
         .options(poise::FrameworkOptions {
             commands: vec![],
@@ -41,11 +40,14 @@ async fn poise_setup() -> serenity::Client {
         .unwrap()
 }
 
-async fn add_jobs(sched: &JobScheduler, client: &serenity::Client) -> Result<(), JobSchedulerError> {
+async fn add_jobs(
+    sched: &JobScheduler,
+    client: &serenity::Client,
+) -> Result<(), JobSchedulerError> {
     const GENERAL_CHANNEL_ID: u64 = 1215048710074011692;
     const TESTING_CHANNEL_ID: u64 = 1235087573421133824;
     let http = client.http.clone();
-    
+
     // night - 3am
     {
         let channel = serenity::ChannelId::new(GENERAL_CHANNEL_ID);
@@ -56,7 +58,7 @@ async fn add_jobs(sched: &JobScheduler, client: &serenity::Client) -> Result<(),
             .with_cron_job_type()
             .with_schedule("0 0 3 * * *")
             .unwrap()
-            .with_run_async(Box::new( move | _uuid, _l | {
+            .with_run_async(Box::new(move |_uuid, _l| {
                 let http = http.clone();
 
                 if bag.is_empty() {
@@ -67,14 +69,14 @@ async fn add_jobs(sched: &JobScheduler, client: &serenity::Client) -> Result<(),
                 let motd = bag[rand_index];
                 bag.remove(rand_index);
 
-                let message = CreateMessage::new()
-                    .content(motd);
+                let message = CreateMessage::new().content(motd);
 
                 Box::pin(async move {
                     let _ = channel.send_message(&http, message).await;
                 })
             }))
-            .build().unwrap();
+            .build()
+            .unwrap();
 
         sched.add(job).await?;
     }

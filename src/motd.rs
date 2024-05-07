@@ -12,5 +12,5 @@ pub static NIGHT_MOTD: &[&str] = &[
     "lets cant sleep together :3",
     "comrade, we must go hunt for business students",
     "yooyokokkokokoiyoykoyoyitoyitoykoyoykoykoyyoyoyoyokokokoykykyoyoyoyoykyoyyyyy",
-    "DAY AND NIGHT, DAY AND NIGHT"
+    "DAY AND NIGHT, DAY AND NIGHT",
 ];

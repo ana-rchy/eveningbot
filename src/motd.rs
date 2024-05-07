@@ -1,3 +1,15 @@
+pub static EVENING_MOTD: &[&str] = &[
+    "good evening",
+    "yawn.",
+    "boo",
+    "WHATEVER YOU DO, DO NOT LOOK AT THE MOON",
+    "the sun will rise once again.",
+    "DAY AND NIGHT, DAY AND NIGHT",
+    "jkhgkdfhgskjldahfgkljsdfhgjklsdhfgjk",
+    "mun pona",
+    "toki a!"
+];
+
 pub static NIGHT_MOTD: &[&str] = &[
     "the voices are coming.",
     "how many eepers does it change to take a log by bolb? none, their to busy ???? their body pillow",
@@ -12,5 +24,8 @@ pub static NIGHT_MOTD: &[&str] = &[
     "lets cant sleep together :3",
     "comrade, we must go hunt for business students",
     "yooyokokkokokoiyoykoyoyitoyitoykoyoykoykoyyoyoyoyokokokoykykyoyoyoyoykyoyyyyy",
-    "DAY AND NIGHT, DAY AND NIGHT",
+    "THE LONELY STONER FREES HIS MIND AT NIGHT, MIND AT NIGHT",
+    "THE MOON LOOKS BEAUTIFUL TONIGHT. YOU SHOULD GO LOOK.",
+    "tenpo pimeja 🌃",
+    "where are my programming socks"
 ];

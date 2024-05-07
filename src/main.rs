@@ -1,15 +1,16 @@
-use eveningbot::motd::*;
-use poise::serenity_prelude::{self as serenity, CreateMessage};
-use tokio_cron_scheduler::{Job, JobBuilder, JobScheduler, JobSchedulerError};
+use std::sync::Arc;
+use poise::serenity_prelude::{self as serenity};
+use tokio_cron_scheduler::JobScheduler;
+use eveningbot::jobs;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[tokio::main]
-async fn main() -> Result<(), JobSchedulerError> {
+async fn main() -> Result<(), Error> {
     let mut client = poise_setup().await;
-    let sched = JobScheduler::new().await?;
+    let sched: Arc<JobScheduler> = Arc::new(JobScheduler::new().await?);
 
-    add_jobs(&sched, &client).await?;
+    jobs::init_jobs(sched.clone(), &client).await?;
 
     sched.start().await?;
     client.start().await.unwrap();
@@ -17,7 +18,9 @@ async fn main() -> Result<(), JobSchedulerError> {
     Ok(())
 }
 
-async fn poise_setup() -> serenity::Client {
+
+
+pub async fn poise_setup() -> serenity::Client {
     let token = std::env::var("DISCORD_TOKEN").expect("envvar the DISCORD_TOKEN");
     let intents = serenity::GatewayIntents::non_privileged();
 
@@ -38,48 +41,4 @@ async fn poise_setup() -> serenity::Client {
         .framework(framework)
         .await
         .unwrap()
-}
-
-async fn add_jobs(
-    sched: &JobScheduler,
-    client: &serenity::Client,
-) -> Result<(), JobSchedulerError> {
-    const GENERAL_CHANNEL_ID: u64 = 1215048710074011692;
-    const TESTING_CHANNEL_ID: u64 = 1235087573421133824;
-    let http = client.http.clone();
-
-    // night - 3am
-    {
-        let channel = serenity::ChannelId::new(GENERAL_CHANNEL_ID);
-        let mut bag = NIGHT_MOTD.to_vec();
-
-        let job = JobBuilder::new()
-            .with_timezone(chrono_tz::Europe::Dublin)
-            .with_cron_job_type()
-            .with_schedule("0 0 3 * * *")
-            .unwrap()
-            .with_run_async(Box::new(move |_uuid, _l| {
-                let http = http.clone();
-
-                if bag.is_empty() {
-                    bag = NIGHT_MOTD.to_vec();
-                }
-
-                let rand_index = rand::random::<usize>() % bag.len();
-                let motd = bag[rand_index];
-                bag.remove(rand_index);
-
-                let message = CreateMessage::new().content(motd);
-
-                Box::pin(async move {
-                    let _ = channel.send_message(&http, message).await;
-                })
-            }))
-            .build()
-            .unwrap();
-
-        sched.add(job).await?;
-    }
-
-    Ok(())
 }

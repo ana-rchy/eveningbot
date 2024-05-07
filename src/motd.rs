@@ -7,7 +7,7 @@ pub static EVENING_MOTD: &[&str] = &[
     "DAY AND NIGHT, DAY AND NIGHT",
     "jkhgkdfhgskjldahfgkljsdfhgjklsdhfgjk",
     "mun pona",
-    "toki a!"
+    "toki a!",
 ];
 
 pub static NIGHT_MOTD: &[&str] = &[

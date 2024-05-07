@@ -1,7 +1,7 @@
-use std::sync::Arc;
-use poise::serenity_prelude::{self as serenity};
-use tokio_cron_scheduler::JobScheduler;
 use eveningbot::jobs;
+use poise::serenity_prelude::{self as serenity};
+use std::sync::Arc;
+use tokio_cron_scheduler::JobScheduler;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
@@ -18,11 +18,10 @@ async fn main() -> Result<(), Error> {
     Ok(())
 }
 
-
 pub async fn poise_setup() -> serenity::Client {
     let token = std::env::var("DISCORD_TOKEN").expect("envvar the DISCORD_TOKEN");
     let intents = serenity::GatewayIntents::non_privileged();
-    
+
     let framework = poise::Framework::<(), Error>::builder()
         .options(poise::FrameworkOptions {
             commands: vec![],

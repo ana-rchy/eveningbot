@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if test -f './token.txt'; then
     DISCORD_TOKEN=$(cat token.txt) cargo run

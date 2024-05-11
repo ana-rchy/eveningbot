@@ -15,7 +15,7 @@ pub async fn get_sunset_time() -> Result<time::OffsetDateTime, reqwest::Error> {
     const DUBLIN_COORDS: (&str, &str) = ("53.345727", "-6.269727");
     const TIMEZONE: &str = "&tzid=Europe/Dublin";
     let url = format!(
-        "https://api.sunrise-sunset.org/json?lat={}&lng={}&formatted=0&tzid={}",
+        "http://api.sunrise-sunset.org/json?lat={}&lng={}&formatted=0&tzid={}",
         DUBLIN_COORDS.0, DUBLIN_COORDS.1, TIMEZONE
     );
 

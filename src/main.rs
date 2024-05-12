@@ -1,4 +1,4 @@
-use eveningbot::jobs;
+use eveningbot::{commands, jobs};
 use poise::serenity_prelude::{self as serenity};
 use std::sync::Arc;
 use tokio_cron_scheduler::JobScheduler;
@@ -24,7 +24,11 @@ pub async fn poise_setup() -> serenity::Client {
 
     let framework = poise::Framework::<(), Error>::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![],
+            commands: vec![commands::fact_check()],
+            prefix_options: poise::PrefixFrameworkOptions {
+                prefix: Some("!".into()),
+                ..Default::default()
+            },
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {

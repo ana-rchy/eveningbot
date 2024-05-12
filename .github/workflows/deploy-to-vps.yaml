@@ -24,6 +24,10 @@ jobs:
           
           git reset --hard HEAD
           git pull origin main
+
+          touch .env
+          chmod 644 .env
+          echo "DISCORD_TOKEN=${{secrets.BOT_TOKEN}}" > .env
           
           docker compose up -d --build
 

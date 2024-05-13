@@ -23,10 +23,13 @@ pub async fn fact_check(ctx: Context<'_>) -> Result<(), Error> {
 
 
 async fn get_fact_check_image() -> File {
-    let paths = std::fs::read_dir("assets/fact_check/").unwrap();
+    let mut exec_path = std::env::current_exe().unwrap();
+    exec_path.pop();
+
+    let paths = std::fs::read_dir(format!("{}/assets/fact_check/", exec_path.display())).unwrap();
     let mut images: Vec<String> = vec![];
     for path in paths {
-        images.push(path.unwrap().path().display().to_string());
+        images.push(format!("{}", path.unwrap().path().display().to_string()));
     }
 
     let rand_index = rand::random::<usize>() % images.len();

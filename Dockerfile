@@ -16,6 +16,7 @@ from debian:stable-slim as debug
 
 run apt update && apt install -y libssl-dev
 
-copy --from=builder /target/release/eveningbot /eveningbot
+copy --from=builder /target/release/eveningbot /eveningbot/eveningbot
+copy --from=builder /assets/fact_check/* /eveningbot/assets/fact_check
 
-cmd ["/eveningbot"]
+cmd ["/eveningbot/eveningbot"]

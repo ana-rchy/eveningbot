@@ -11,6 +11,7 @@ pub async fn init_jobs(
     client: &serenity::Client,
 ) -> Result<(), JobSchedulerError> {
     const GENERAL_CHANNEL_ID: u64 = 1215048710074011692;
+    #[allow(dead_code)]
     const TESTING_CHANNEL_ID: u64 = 1235087573421133824;
     let http = client.http.clone();
 

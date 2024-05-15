@@ -126,10 +126,12 @@ async fn create_sunset_job(
             let motd = bag[rand_index];
             bag.remove(rand_index);
 
-            let message = CreateMessage::new().content(motd);
+            let main_message = CreateMessage::new().content(motd);
+            let ge_message = CreateMessage::new().content("good evening");
 
             Box::pin(async move {
-                let _ = channel.send_message(http, message).await;
+                let _ = channel.send_message(&http, main_message).await;
+                let _ = channel.send_message(http, ge_message).await;
             })
         }))
         .build()

@@ -1,5 +1,5 @@
 pub static EVENING_MOTD: &[&str] = &[
-    "good evening",
+    "evening good?",
     "yawn.",
     "boo",
     "WHATEVER YOU DO, DO NOT LOOK AT THE MOON",

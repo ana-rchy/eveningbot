@@ -14,7 +14,8 @@ pub async fn init_jobs(
     #[allow(dead_code)]
     const TESTING_CHANNEL_ID: u64 = 1235087573421133824;
     let http = client.http.clone();
-
+    
+    // arc my beloved
     let sunset_job_id: Arc<Mutex<Uuid>> = Default::default();
     let evening_bag = Arc::new(Mutex::new(EVENING_MOTD.to_vec()));
     let night_bag = Arc::new(Mutex::new(NIGHT_MOTD.to_vec()));
@@ -77,11 +78,17 @@ pub async fn init_jobs(
                 let evening_bag = evening_bag.clone();
 
                 Box::pin(async move {
-                    let _ = sched.remove(&sunset_job_id.lock().unwrap());
+                    // drop lock before sunset_job_id is used again
+                    // otherwise youre tryna use it while its locked
+                    let id = { *sunset_job_id.lock().unwrap() };
+
+                    let _ = sched.remove(&id).await;
 
                     let job =
                         create_sunset_job(http, GENERAL_CHANNEL_ID, evening_bag.clone()).await;
-                    *sunset_job_id.lock().unwrap() = sched.add(job).await.unwrap();
+                    let new_id = sched.add(job).await.unwrap();
+                    // can be done without braces but better for consistency
+                    { *sunset_job_id.lock().unwrap() = new_id; }
                 })
             }))
             .build()

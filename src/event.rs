@@ -31,7 +31,7 @@ pub async fn event_handler(
         }
 
         serenity::FullEvent::Message { new_message } => {
-            const GENERAL_CHANNEL_ID: u64 = 1235087573421133824;
+            const GENERAL_CHANNEL_ID: u64 = 1215048710074011692;
             
             let sunset_time = *shared_data.sunset_time.lock().unwrap();
             let current_time = OffsetDateTime::now_utc().to_offset(sunset_time.offset());

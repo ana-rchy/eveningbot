@@ -1,3 +1,9 @@
+use std::sync::{Arc, Mutex};
+
+pub struct SharedData {
+    pub sunset_time: Arc<Mutex<time::OffsetDateTime>>
+}
+
 pub static EVENING_MOTD: &[&str] = &[
     "evening good?",
     "yawn.",
@@ -28,4 +34,25 @@ pub static NIGHT_MOTD: &[&str] = &[
     "THE MOON LOOKS BEAUTIFUL TONIGHT. YOU SHOULD GO LOOK.",
     "tenpo pimeja 🌃",
     "where are my programming socks"
+];
+
+pub static GOOD_EVENINGS: &[&str] = &[
+    "good evening",
+    "dobry wieczor",
+    "dobry wieczór",
+    "tenpo pimeja pona",
+    "pimeja pona",
+    "buenas noches",
+    "bonsoir",
+    "こんばんは",
+    "こんばん",
+    "konbanwa",
+    "konbanha",
+    "konban",
+    "晚上好",
+    "晚安",
+    "wan3 shang4 hao3",
+    "wan shang hao",
+    "wan4 an1",
+    "wan an"
 ];

@@ -1,4 +1,4 @@
-use crate::motd::*;
+use crate::global::*;
 use crate::web;
 use poise::serenity_prelude::Http;
 use poise::serenity_prelude::{self as serenity, CreateMessage};
@@ -9,6 +9,7 @@ use uuid::Uuid;
 pub async fn init_jobs(
     sched: Arc<JobScheduler>,
     client: &serenity::Client,
+    shared_data: &SharedData
 ) -> Result<(), JobSchedulerError> {
     const GENERAL_CHANNEL_ID: u64 = 1215048710074011692;
     #[allow(dead_code)]
@@ -22,7 +23,9 @@ pub async fn init_jobs(
 
     // evening - sunset time from sunrise-sunset.org
     {
-        let job = create_sunset_job(http.clone(), GENERAL_CHANNEL_ID, evening_bag.clone()).await;
+        let sunset_time = { *shared_data.sunset_time.lock().unwrap() };
+
+        let job = create_sunset_job(http.clone(), GENERAL_CHANNEL_ID, sunset_time, evening_bag.clone()).await;
         *sunset_job_id.lock().unwrap() = sched.add(job).await?;
     }
 
@@ -60,10 +63,11 @@ pub async fn init_jobs(
         sched.add(job).await?;
     }
 
-    // refresh sunset job
+    // refresh sunset job/time
     {
         let http = http.clone();
         let scope_sched = sched.clone();
+        let sunset_time = shared_data.sunset_time.clone();
 
         let job = JobBuilder::new()
             .with_timezone(chrono_tz::Europe::Dublin)
@@ -73,20 +77,25 @@ pub async fn init_jobs(
             .with_run_async(Box::new(move |_uuid, _l| {
                 let http = http.clone();
                 let sched = sched.clone();
+
+                let sunset_time = sunset_time.clone();
                 let sunset_job_id = sunset_job_id.clone();
 
                 let evening_bag = evening_bag.clone();
 
                 Box::pin(async move {
+                    let new_sunset_time = web::get_sunset_time().await.unwrap();
+                    *sunset_time.lock().unwrap() = new_sunset_time;
+
                     // drop lock before sunset_job_id is used again
                     // otherwise youre tryna use it while its locked
                     let id = { *sunset_job_id.lock().unwrap() };
 
                     let _ = sched.remove(&id).await;
 
-                    let job =
-                        create_sunset_job(http, GENERAL_CHANNEL_ID, evening_bag.clone()).await;
+                    let job = create_sunset_job(http, GENERAL_CHANNEL_ID, new_sunset_time, evening_bag.clone()).await;
                     let new_id = sched.add(job).await.unwrap();
+
                     // can be done without braces but better for consistency
                     { *sunset_job_id.lock().unwrap() = new_id; }
                 })
@@ -103,9 +112,9 @@ pub async fn init_jobs(
 async fn create_sunset_job(
     http: Arc<Http>,
     channel_id: u64,
-    bag: Arc<Mutex<Vec<&'static str>>>,
+    time: time::OffsetDateTime,
+    bag: Arc<Mutex<Vec<&'static str>>>
 ) -> tokio_cron_scheduler::Job {
-    let time = web::get_sunset_time().await.unwrap();
     let schedule = &format!("{} {} {} * * *", time.second(), time.minute(), time.hour())[..];
     println!(
         "sunset today - {:02}:{:02}:{:02}",

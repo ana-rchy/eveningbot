@@ -44,7 +44,7 @@ pub async fn event_handler(
             if !(current_time > sunset_time && current_time.hour() < 24)
                 || !(new_message.channel_id == GENERAL_CHANNEL_ID || new_message.channel_id == TESTING_CHANNEL_ID)
                 || new_message.author.id == BOT_ID
-                || !GOOD_EVENINGS.contains(&&new_message.content.to_lowercase()[..])
+                || !GOOD_EVENINGS.iter().any(|a| new_message.content.contains(a))
             {
                 return Ok(());
             }

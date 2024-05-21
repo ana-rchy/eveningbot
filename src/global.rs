@@ -71,7 +71,7 @@ pub static NIGHT_MOTD: &[&str] = &[
     "THE LONELY STONER FREES HIS MIND AT NIGHT, MIND AT NIGHT",
     "THE MOON LOOKS BEAUTIFUL TONIGHT. YOU SHOULD GO LOOK.",
     "tenpo pimeja 🌃",
-    "where are my programming socks"
+    "where are my programming socks",
 ];
 
 pub static GOOD_EVENINGS: &[&str] = &[
@@ -92,5 +92,13 @@ pub static GOOD_EVENINGS: &[&str] = &[
     "wan3 shang4 hao3",
     "wan shang hao",
     "wan4 an1",
-    "wan an"
+    "wan an",
+    "guten abend",
+    "tráthnóna maith",
+    "tráthnona maith",
+    "trathnóna maith",
+    "trathnona maith",
+    "goejûn",
+    "goejun",
+    "gott kveld",
 ];

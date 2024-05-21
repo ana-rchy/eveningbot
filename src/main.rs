@@ -1,23 +1,21 @@
-use eveningbot::{global::*, jobs, commands, event, web};
+use eveningbot::{global::*, jobs, commands, event};
 use poise::serenity_prelude::{self as serenity, GatewayIntents};
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tokio_cron_scheduler::JobScheduler;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let shared_data = SharedData {
-        sunset_time: Arc::new(Mutex::new(web::get_sunset_time().await.unwrap()))
-    };
+    let shared_data = SharedData::new().await;
 
     let mut client = poise_setup(&shared_data).await;
     let sched: Arc<JobScheduler> = Arc::new(JobScheduler::new().await?);
 
     jobs::init_jobs(sched.clone(), &client, &shared_data).await?;
 
-    sched.start().await?;
-    client.start().await.unwrap();
+    sched.start().await.expect("scheduler failed");
+    client.start().await.expect("client failed");
 
     Ok(())
 }
@@ -28,6 +26,9 @@ pub async fn poise_setup(shared_data: &SharedData) -> serenity::Client {
         | GatewayIntents::GUILD_MESSAGES;
 
     let sunset_time = shared_data.sunset_time.clone();
+    let assets_path = shared_data.root_path.clone();
+    let evening_leaderboard = shared_data.evening_leaderboard.clone();
+    let first_ge_sent = shared_data.first_ge_sent.clone();
 
     let framework = poise::Framework::builder()
         .setup(|ctx, _ready, framework| {
@@ -35,7 +36,10 @@ pub async fn poise_setup(shared_data: &SharedData) -> serenity::Client {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
 
                 Ok(SharedData {
-                    sunset_time
+                    sunset_time,
+                    root_path: assets_path,
+                    evening_leaderboard,
+                    first_ge_sent
                 })
             })
         })

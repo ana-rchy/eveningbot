@@ -10,6 +10,7 @@ chrono-tz = "0.9.0"
 poise = "0.6.1" 
 rand = "0.8.5"
 reqwest = { version = "0.12.4", features = ["json"] }
+rmp-serde = "1.3.0"
 serde = "1.0.200"
 time = { version = "0.3.36", features = ["serde", "parsing"] }
 tokio = { version = "1.37.0", features = ["rt-multi-thread"] }

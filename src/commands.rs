@@ -7,7 +7,7 @@ type Context<'a> = poise::Context<'a, SharedData, Error>;
 
 #[poise::command(prefix_command, slash_command)]
 pub async fn fact_check(ctx: Context<'_>) -> Result<(), Error> {
-    let (image, filename) = get_fact_check_image().await;
+    let (image, filename) = get_fact_check_image(ctx.data()).await;
     let attachment = CreateAttachment
         ::file(&image, filename).await.unwrap();
 
@@ -22,8 +22,8 @@ pub async fn fact_check(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 
-async fn get_fact_check_image() -> (File, String) {
-    let root_folder = get_assets_root_path();
+async fn get_fact_check_image(shared_data: &SharedData) -> (File, String) {
+    let root_folder = &shared_data.root_path;
 
     let paths = std::fs::read_dir(format!("{}/assets/fact_check/", root_folder)).unwrap();
     let mut images: Vec<String> = vec![];
@@ -36,14 +36,4 @@ async fn get_fact_check_image() -> (File, String) {
     let image = &images[rand_index];
 
     (File::open(image).await.unwrap(), image.to_string())
-}
-
-fn get_assets_root_path() -> String {
-    let mut exec_path = std::env::current_exe().unwrap();
-    exec_path.pop();
-    if cfg!(debug_assertions) {
-        exec_path.pop(); exec_path.pop();
-    }
-
-    exec_path.to_string_lossy().to_string()
 }

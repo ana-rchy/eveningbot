@@ -1,7 +1,45 @@
+use crate::web;
+use std::collections::HashMap;
+use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
+use tokio::sync as tsync;
+
 
 pub struct SharedData {
-    pub sunset_time: Arc<Mutex<time::OffsetDateTime>>
+    pub sunset_time: Arc<Mutex<time::OffsetDateTime>>,
+    pub root_path: String,
+    pub evening_leaderboard: Arc<tsync::Mutex<HashMap<u64, u16>>>,
+    pub first_ge_sent: Arc<AtomicBool>
+}
+
+impl SharedData {
+    pub async fn new() -> Self {
+        let mut exec_path = std::env::current_exe().expect("couldnt get current executable path");
+        exec_path.pop();
+        if cfg!(debug_assertions) {
+            exec_path.pop(); exec_path.pop();
+        }
+        let assets_path = exec_path.to_string_lossy().to_string();
+
+        let leaderboard: HashMap<u64, u16> = {
+            let path_string = format!("{}/assets/leaderboard.bin", assets_path);
+            let path = std::path::Path::new(&path_string);
+
+            if !path.try_exists().expect("file checking error") {
+                HashMap::new()
+            } else {
+                let bytes = std::fs::read(format!("{}/assets/leaderboard.bin", assets_path)).expect("couldnt read leaderboard file");
+                rmp_serde::decode::from_slice(&bytes).expect("couldnt deserialize leaderboard")
+            }
+        };
+
+        SharedData {
+            sunset_time: Arc::new(Mutex::new(web::get_sunset_time().await.unwrap())),
+            root_path: assets_path,
+            evening_leaderboard: Arc::new(tsync::Mutex::new(leaderboard)),
+            first_ge_sent: Arc::new(AtomicBool::new(false))
+        }
+    }
 }
 
 pub static EVENING_MOTD: &[&str] = &[

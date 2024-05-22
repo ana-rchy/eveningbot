@@ -33,10 +33,10 @@ pub async fn event_handler(
 
         serenity::FullEvent::Message { new_message } => {
             // early returns
-            const BOT_ID: u64 = 1235086289255137404;
             #[allow(dead_code)]
             const TESTING_CHANNEL_ID: u64 = 1235087573421133824;
             const GENERAL_CHANNEL_ID: u64 = 1215048710074011692;
+            const BOT_ID: u64 = 1235086289255137404;
 
             let sunset_time = *shared_data.sunset_time.lock().unwrap();
             let current_time = OffsetDateTime::now_utc().to_offset(sunset_time.offset());
@@ -44,8 +44,12 @@ pub async fn event_handler(
             if !(current_time > sunset_time && current_time.hour() < 24)
                 || !(new_message.channel_id == GENERAL_CHANNEL_ID || new_message.channel_id == TESTING_CHANNEL_ID)
                 || new_message.author.id == BOT_ID
-                || !GOOD_EVENINGS.iter().any(|a| new_message.content.to_lowercase().contains(a))
             {
+                return Ok(());
+            }
+
+            if !GOOD_EVENINGS.iter().any(|a| new_message.content.to_lowercase().contains(a)) {
+                easter_egg_reacts(&ctx, &new_message).await;
                 return Ok(());
             }
 
@@ -80,4 +84,18 @@ pub async fn event_handler(
     }
 
     Ok(())
+}
+
+async fn easter_egg_reacts(ctx: &serenity::Context, message: &serenity::model::channel::Message) {
+    if !message.content.to_lowercase().contains("good morning") {
+        return;
+    }
+
+    let reaction = ReactionType::Custom {
+        animated: true,
+        id: EmojiId::new(1218307823549546496),
+        name: Some("nerdo".to_string()),
+    };
+    
+    message.react(&ctx.http, reaction).await.unwrap();
 }

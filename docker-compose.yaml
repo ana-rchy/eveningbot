@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  eveningbot:
+    env_file:
+      - ./.env
+    build: .
+    restart: on-failure:3

@@ -10,12 +10,14 @@ copy Cargo.lock Cargo.lock
 run cargo build --release
 
 copy src/ src/
+copy assets/ assets/
 run cargo build --release
 
 from debian:stable-slim as debug
 
 run apt update && apt install -y libssl-dev
 
-copy --from=builder /target/release/eveningbot /eveningbot
+copy --from=builder /target/release/eveningbot /eveningbot/eveningbot
+copy --from=builder /assets/ /eveningbot/assets/
 
-cmd ["/eveningbot"]
+cmd ["/eveningbot/eveningbot"]

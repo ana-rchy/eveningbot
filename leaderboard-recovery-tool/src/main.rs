@@ -11,7 +11,7 @@ fn main() {
         let mut input = String::new();
         io::stdin().read_line(&mut input).expect("cant read input");
 
-        let mut params = input.split(",");
+        let mut params = input.trim_end().split(",");
         let id = params.next().unwrap().parse::<u64>().unwrap();
         let count = params.next().unwrap().parse::<u16>().unwrap();
         leaderboard.insert(id, count);

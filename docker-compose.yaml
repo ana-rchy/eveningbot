@@ -5,3 +5,6 @@ services:
       - ./.env
     build: .
     restart: on-failure:3
+
+volumes:
+  - .:/eveningbot/

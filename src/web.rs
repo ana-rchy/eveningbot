@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use log::info;
 
 #[derive(Deserialize)]
 struct SunriseSunsetIoResponse {
@@ -23,6 +24,8 @@ pub async fn get_sunset_time() -> Result<time::OffsetDateTime, reqwest::Error> {
         .await?
         .json::<SunriseSunsetIoResponse>()
         .await?;
+    
+    info!("todays sunset time: {}", resp.results.sunset);
 
     Ok(resp.results.sunset)
 }

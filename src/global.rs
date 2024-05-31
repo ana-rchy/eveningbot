@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
 use tokio::sync as tsync;
+use log::info;
 
 
 pub struct SharedData {
@@ -26,8 +27,12 @@ impl SharedData {
             let path = std::path::Path::new(&path_string);
 
             if !path.try_exists().expect("file checking error") {
+                info!("new leaderboard file created");
+
                 HashMap::new()
             } else {
+                info!("leaderboard read from file");
+
                 let bytes = std::fs::read(format!("{}/assets/leaderboard.bin", assets_path)).expect("couldnt read leaderboard file");
                 rmp_serde::decode::from_slice(&bytes).expect("couldnt deserialize leaderboard")
             }

@@ -2,6 +2,7 @@ use crate::global::*;
 use std::sync::atomic::Ordering;
 use poise::serenity_prelude::{self as serenity, CreateMessage, EmojiId, GuildRef, ReactionType};
 use time::*;
+use log::{info, debug};
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
@@ -20,15 +21,15 @@ pub async fn event_handler(
                 let guild: GuildRef = ctx.cache.guild(guild_id).unwrap();
                 guild.member_count
             };
+            
+            let content = format!("<@{}> left, now {} server members",
+                user.id,
+                member_count);
 
-            let message = CreateMessage::new()
-                .content(
-                    format!("<@{}> left, now {} server members",
-                        user.id,
-                        member_count)
-                    );
-
+            let message = CreateMessage::new().content(&content);
             let _ = channel.send_message(&ctx.http, message).await;
+
+            info!("{content}");
         }
 
         serenity::FullEvent::Message { new_message } => {
@@ -63,6 +64,8 @@ pub async fn event_handler(
             
             new_message.react(&ctx.http, reaction).await.unwrap();
 
+            debug!("GE reaction added for message: {}", new_message.content);
+
 
             // handle leaderboard if its the first GE of the day
             if shared_data.first_ge_sent.load(Ordering::SeqCst) {
@@ -74,10 +77,26 @@ pub async fn event_handler(
             let user_id = u64::from(new_message.author.id);
             let mut leaderboard = shared_data.evening_leaderboard.lock().await;
 
-            leaderboard.entry(user_id).and_modify(|e| *e += 1).or_insert(1);
+            
+            let path = format!("{}/assets/leaderboard.bin", shared_data.root_path);
+            if leaderboard.is_empty() {
+                debug!("leaderboard hashmap is empty");
+            } else {
+                debug!("leaderboard hashmap is filled");
+            }
+            if std::path::Path::new(&path).exists() {
+                debug!("leaderboard file exists");
+            } else {
+                debug!("leaderboard file doesnt exist");
+            }
 
+
+            leaderboard.entry(user_id).and_modify(|e| *e += 1).or_insert(1);
+            
             let leaderboard_bytes = rmp_serde::encode::to_vec(&*leaderboard).expect("couldnt serialize leaderboard");
-            _ = std::fs::write(format!("{}/assets/leaderboard.bin", shared_data.root_path), leaderboard_bytes);
+            _ = std::fs::write(path, leaderboard_bytes);
+
+            info!("first GE of day sent, leaderboard written to");
         }
 
         _ => {}
@@ -98,4 +117,6 @@ async fn easter_egg_reacts(ctx: &serenity::Context, message: &serenity::model::c
     };
     
     message.react(&ctx.http, reaction).await.unwrap();
+
+    debug!("easter egg reaction added");
 }

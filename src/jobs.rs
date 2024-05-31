@@ -4,6 +4,7 @@ use std::sync::{Arc, Mutex, atomic::Ordering};
 use poise::serenity_prelude::{self as serenity, Colour, CreateEmbed, CreateMessage, Http, UserId};
 use tokio_cron_scheduler::{JobBuilder, JobScheduler, JobSchedulerError};
 use uuid::Uuid;
+use log::debug;
 
 pub async fn init_jobs(
     sched: Arc<JobScheduler>,
@@ -77,6 +78,8 @@ pub async fn init_jobs(
                         top_10
                     };
 
+                    debug!("leaderboard retrieved:\n{leaderboard_top_10}");
+
                     let embed = CreateEmbed::new()
                         .colour(Colour::from_rgb(255, 0, 124))
                         .title("good evening leaderboard")
@@ -124,6 +127,9 @@ pub async fn init_jobs(
 
                     { *sunset_time.lock().unwrap() = new_sunset_time; }
                     { *sunset_job_id.lock().unwrap() = new_id; }
+
+
+                    debug!("sunset job {id} replaced with {new_id}");
                 })
             }))
             .build()
@@ -176,14 +182,9 @@ async fn create_sunset_job(
     bag: Arc<Mutex<Vec<&'static str>>>
 ) -> tokio_cron_scheduler::Job {
     let schedule = &format!("{} {} {} * * *", time.second(), time.minute(), time.hour())[..];
-    println!(
-        "sunset today - {:02}:{:02}:{:02}",
-        time.hour(),
-        time.minute(),
-        time.second()
-    );
-
     let channel = serenity::ChannelId::new(channel_id);
+
+    debug!("creating new sunset job with schedule {schedule}");
 
     JobBuilder::new()
         .with_timezone(chrono_tz::Europe::Dublin)

@@ -7,6 +7,14 @@ type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    let log_config = simplelog::ConfigBuilder::new()
+        .add_filter_allow_str("eveningbot")
+        .build();
+    simplelog::WriteLogger::init(
+        log::LevelFilter::Debug,
+        log_config, 
+        std::fs::File::create("eveningbot.log").unwrap())?;
+
     let shared_data = SharedData::new().await;
 
     let mut client = poise_setup(&shared_data).await;

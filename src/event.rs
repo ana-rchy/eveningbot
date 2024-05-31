@@ -41,7 +41,7 @@ pub async fn event_handler(
             let sunset_time = *shared_data.sunset_time.lock().unwrap();
             let current_time = OffsetDateTime::now_utc().to_offset(sunset_time.offset());
 
-            if !(current_time > sunset_time && current_time.hour() < 24)
+            if !(current_time.time() > sunset_time.time() && current_time.hour() < 24)
                 || !(new_message.channel_id == GENERAL_CHANNEL_ID || new_message.channel_id == TESTING_CHANNEL_ID)
                 || new_message.author.id == BOT_ID
             {

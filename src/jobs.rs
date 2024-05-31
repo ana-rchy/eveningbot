@@ -99,8 +99,6 @@ pub async fn init_jobs(
         let sched_closure = sched.clone();
         let sunset_time = shared_data.sunset_time.clone();
 
-        let new_sunset_time = web::get_sunset_time().await.unwrap();
-
         let job = JobBuilder::new()
             .with_timezone(chrono_tz::Europe::Dublin)
             .with_cron_job_type()
@@ -116,7 +114,7 @@ pub async fn init_jobs(
                 let evening_bag = evening_bag.clone();
 
                 Box::pin(async move {
-                    { *sunset_time.lock().unwrap() = new_sunset_time; }
+                    let new_sunset_time = web::get_sunset_time().await.unwrap();
 
                     let id = { *sunset_job_id.lock().unwrap() };
                     let job = create_sunset_job(http, GENERAL_CHANNEL_ID, new_sunset_time, evening_bag.clone()).await;
@@ -124,6 +122,7 @@ pub async fn init_jobs(
                     _ = sched.remove(&id).await;
                     let new_id = sched.add(job).await.unwrap();
 
+                    { *sunset_time.lock().unwrap() = new_sunset_time; }
                     { *sunset_job_id.lock().unwrap() = new_id; }
                 })
             }))

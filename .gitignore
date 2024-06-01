@@ -1,4 +1,5 @@
 target/
 token.txt
 assets/leaderboard.bin
+leaderboard-recovery-tool/leaderboard.bin
 eveningbot.log

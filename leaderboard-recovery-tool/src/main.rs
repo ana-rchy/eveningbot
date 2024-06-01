@@ -7,9 +7,14 @@ fn main() {
     let mut leaderboard = HashMap::<u64, u16>::new();
 
     println!("enter entries in format [user_id],[count]");
+    println!("enter nothing to exit");
+
     loop {
         let mut input = String::new();
         io::stdin().read_line(&mut input).expect("cant read input");
+        if input == "\n" {
+            std::process::exit(0);
+        }
 
         let mut params = input.trim_end().split(",");
         let id = params.next().unwrap().parse::<u64>().unwrap();

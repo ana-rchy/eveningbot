@@ -57,6 +57,13 @@ pub static EVENING_MOTD: &[&str] = &[
     "jkhgkdfhgskjldahfgkljsdfhgjklsdhfgjk",
     "mun pona",
     "toki a!",
+    "Innate Technique: Sunset Blossom",
+    "I didn’t know you could go this far… EVENING SUN!!!!",
+    "You were magnificient, sunset. I shall never forget you for as long as I live.",
+    "With this sunset, I summon...",
+    "1% SUN 99% SET",
+    "Are you the sun because you set everyday, or do you set everyday because you are the sun?",
+    "Eight-Handled Sun Divergent Evening Divine General Eveningbot:",
 ];
 
 pub static NIGHT_MOTD: &[&str] = &[
@@ -77,6 +84,11 @@ pub static NIGHT_MOTD: &[&str] = &[
     "THE MOON LOOKS BEAUTIFUL TONIGHT. YOU SHOULD GO LOOK.",
     "tenpo pimeja 🌃",
     "where are my programming socks",
+    "Reverse Cursed Technique: Sunrise Wilting",
+    "Domain Expansion: Restful Realm",
+    "Throughout the beds and the pillows, I alone am the insomniac one",
+    "You're eepy, sleep proud.",
+    "Those who had inherited that curse, the one who could not fully leave it behind. They would all now bear witness, to the flesh of the one who cannot sleep, and their overwhelming brain fog.",
 ];
 
 pub static GOOD_EVENINGS: &[&str] = &[

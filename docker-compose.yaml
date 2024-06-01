@@ -6,5 +6,5 @@ services:
     build: .
     restart: on-failure:3
 
-  volumes:
-    - ./:/eveningbot/
+    volumes:
+      - ./:/eveningbot/

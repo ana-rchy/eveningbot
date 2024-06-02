@@ -1,5 +1,6 @@
 use crate::global::*;
 use std::sync::atomic::Ordering;
+use std::str::FromStr;
 use poise::serenity_prelude::{self as serenity, CreateMessage, EmojiId, GuildRef, ReactionType};
 use time::*;
 use log::{info, debug};
@@ -33,6 +34,8 @@ pub async fn event_handler(
         }
 
         serenity::FullEvent::Message { new_message } => {
+            easter_egg_reacts(&ctx, &new_message).await;
+
             // early returns
             #[allow(dead_code)]
             const TESTING_CHANNEL_ID: u64 = 1235087573421133824;
@@ -45,12 +48,8 @@ pub async fn event_handler(
             if !(current_time.time() > sunset_time.time() && current_time.hour() < 24)
                 || !(new_message.channel_id == GENERAL_CHANNEL_ID || new_message.channel_id == TESTING_CHANNEL_ID)
                 || new_message.author.id == BOT_ID
+                || !GOOD_EVENINGS.iter().any(|a| new_message.content.to_lowercase().contains(a)) 
             {
-                return Ok(());
-            }
-
-            if !GOOD_EVENINGS.iter().any(|a| new_message.content.to_lowercase().contains(a)) {
-                easter_egg_reacts(&ctx, &new_message).await;
                 return Ok(());
             }
 
@@ -106,17 +105,15 @@ pub async fn event_handler(
 }
 
 async fn easter_egg_reacts(ctx: &serenity::Context, message: &serenity::model::channel::Message) {
-    if !message.content.to_lowercase().contains("good morning") {
-        return;
+    for i in EASTER_EGG_REACTS.entries() {
+        if !message.content.contains(i.0) {
+            continue;
+        }
+
+        let reaction = ReactionType::from_str(i.1).unwrap();
+
+        message.react(&ctx.http, reaction).await.unwrap();
+
+        debug!("easter egg reaction {} added", i.1);
     }
-
-    let reaction = ReactionType::Custom {
-        animated: true,
-        id: EmojiId::new(1218307823549546496),
-        name: Some("nerdo".to_string()),
-    };
-    
-    message.react(&ctx.http, reaction).await.unwrap();
-
-    debug!("easter egg reaction added");
 }

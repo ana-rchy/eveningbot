@@ -2,6 +2,7 @@ use crate::web;
 use std::collections::HashMap;
 use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
+use phf::phf_map;
 use tokio::sync as tsync;
 use log::info;
 
@@ -64,6 +65,7 @@ pub static EVENING_MOTD: &[&str] = &[
     "1% SUN 99% SET",
     "Are you the sun because you set everyday, or do you set everyday because you are the sun?",
     "Eight-Handled Sun Divergent Evening Divine General Eveningbot:",
+    "the evening knows when it is by knowing when it isnt",
 ];
 
 pub static NIGHT_MOTD: &[&str] = &[
@@ -119,3 +121,27 @@ pub static GOOD_EVENINGS: &[&str] = &[
     "goejun",
     "gott kveld",
 ];
+
+pub static EASTER_EGG_REACTS: phf::Map<&str, &str> = phf_map!{
+    "good morning" => "<a:nerdo:1218307823549546497>",
+    "kijetesantakalu" => "<:kijetesantakalu:1218305634563264572>",
+    "lesbiab" => "<:pls:1218307863613673573>",
+    "ana" => "<:ourdictator:1246936494548062302>",
+    "niko" => "<:ourdictator:1246936494548062302>",
+    "our dictator" => "<:ourdictator:1246936494548062302>",
+    "benevolent dictator for life" => "<:ourdictator:1246936494548062302>",
+    "shroom" => "<a:mushroomdance:1218307936271728680>",
+    "soko" => "<a:mushroomdance:1218307936271728680>",
+    "grzyb" => "<a:mushroomdance:1218307936271728680>",
+    "tiocfaidh ár lá" => "🇮🇪", // ie flag
+    "tiocfaidh ar la" => "🇮🇪",
+    "egg" => "<a:eggblush:1218305920119865484>",
+    "meow" => "<a:catkiss:1218306966301184040>",
+    "mrew" => "<a:catkiss:1218306966301184040>",
+    "mrow" => "<a:catkiss:1218306966301184040>",
+    "mraw" => "<a:catkiss:1218306966301184040>",
+    "nya" => "<a:catkiss:1218306966301184040>",
+    "nja" => "<a:catkiss:1218306966301184040>",
+    "moo" => "<a:krowa:1218306885824807103>",
+    "whar" => "<:whar:1246955200200048703>",
+};

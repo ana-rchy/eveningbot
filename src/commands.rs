@@ -43,11 +43,11 @@ async fn get_fact_check_image(shared_data: &SharedData) -> (File, String) {
 #[poise::command(slash_command, prefix_command)]
 pub async fn roll(
     ctx: Context<'_>,
-    min: Option<i64>, max: Option<i64>,
-    min_imaginary: Option<i64>, max_imaginary: Option<i64>
+    max: Option<i64>, min: Option<i64>,
+    max_imaginary: Option<i64>, min_imaginary: Option<i64>
 ) -> Result<(), Error> {
-    let min = min.unwrap_or(1);
-    let max = max.unwrap_or(101);    
+    let min = min.unwrap_or(0);
+    let max = max.unwrap_or(100);    
     
     let rand_r = roll_2(min, max).await;
 
@@ -62,6 +62,12 @@ pub async fn roll(
         ctx.say(format!("{rand_r}+{rand_i}i")).await?;
     }
 
+    if rand_r == min {
+        ctx.say("CRIT FAIL. dumbass.").await?;
+    } else if rand_r == max {
+        ctx.say("NAT 20 LETS GOOOOOOOOO").await?;
+    }
+
     Ok(())
 }
 
@@ -71,8 +77,7 @@ async fn roll_2(mut min: i64, mut max: i64) -> i64 {
     min = if max < min { max } else { min };
     max = if temp > max { temp } else { max };
 
-    let range = if max - min > 0 { max - min } else { 1 };  // double of the same number
-                                                            // returns that number
+    let range = max - min + 1;  // makes max inclusive
     
     let rand_num = ((rand::random::<i64>() % range) + range) % range;  // uses maths modulo,
                                                                            // not modulus

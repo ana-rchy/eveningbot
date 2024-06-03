@@ -19,3 +19,4 @@ time = { version = "0.3.36", features = ["serde", "parsing"] }
 tokio = { version = "1.37.0", features = ["rt-multi-thread"] }
 tokio-cron-scheduler = "0.10.2"
 uuid = "1.8.0"
+uwu-rs = "1.0.0"

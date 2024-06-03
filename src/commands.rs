@@ -85,6 +85,21 @@ async fn roll_2(mut min: i64, mut max: i64) -> i64 {
 }
 
 
+#[poise::command(slash_command, prefix_command)]
+pub async fn uwuify(ctx: Context<'_>, text: Option<String>) -> Result<(), Error> {
+    if text.is_none() {
+        ctx.say("nu tewext unu ;(").await?;
+        return Ok(());
+    }
+
+    let uwuified = uwu_rs::Uwu::new().uwuify(text.unwrap()).expect("uwufication failed bruh how tf");
+
+    ctx.say(uwuified).await?;
+
+    Ok(())
+}
+
+
 #[poise::command(prefix_command)]
 pub async fn get_leaderboard(ctx: Context<'_>, param: Option<String>) -> Result<(), Error> {
     let http = ctx.http();

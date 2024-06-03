@@ -424,6 +424,7 @@ dependencies = [
  "tokio",
  "tokio-cron-scheduler",
  "uuid",
+ "uwu-rs",
 ]
 
 [[package]]
@@ -2274,6 +2275,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a183cf7feeba97b4dd1c0d46788634f6221d87fa961b305bed08c851829efcc0"
 dependencies = [
  "getrandom",
+]
+
+[[package]]
+name = "uwu-rs"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4090ec9f540e601e4b2e7f2cdd33f7c93e82d5e167b85c77b9c6f13363e70824"
+dependencies = [
+ "aho-corasick",
+ "fastrand",
+ "thiserror",
+ "tracing",
 ]
 
 [[package]]

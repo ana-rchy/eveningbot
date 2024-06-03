@@ -1,4 +1,4 @@
-use eveningbot::{global::*, jobs, commands, event};
+use eveningbot::{global::*, jobs, commands::*, event};
 use poise::serenity_prelude::{self as serenity, GatewayIntents};
 use std::sync::Arc;
 use tokio_cron_scheduler::JobScheduler;
@@ -52,7 +52,7 @@ pub async fn poise_setup(shared_data: &SharedData) -> serenity::Client {
             })
         })
         .options(poise::FrameworkOptions {
-            commands: vec![commands::fact_check(), commands::get_leaderboard(), commands::roll()],
+            commands: vec![fact_check(), get_leaderboard(), roll(), uwuify()],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".into()),
                 ..Default::default()

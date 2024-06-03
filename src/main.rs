@@ -52,7 +52,7 @@ pub async fn poise_setup(shared_data: &SharedData) -> serenity::Client {
             })
         })
         .options(poise::FrameworkOptions {
-            commands: vec![commands::fact_check(), commands::get_leaderboard()],
+            commands: vec![commands::fact_check(), commands::get_leaderboard(), commands::roll()],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".into()),
                 ..Default::default()

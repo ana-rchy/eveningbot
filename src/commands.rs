@@ -40,6 +40,46 @@ async fn get_fact_check_image(shared_data: &SharedData) -> (File, String) {
 }
 
 
+#[poise::command(slash_command, prefix_command)]
+pub async fn roll(
+    ctx: Context<'_>,
+    min: Option<i64>, max: Option<i64>,
+    min_imaginary: Option<i64>, max_imaginary: Option<i64>
+) -> Result<(), Error> {
+    let min = min.unwrap_or(1);
+    let max = max.unwrap_or(101);    
+    
+    let rand_r = roll_2(min, max).await;
+
+    if min_imaginary.is_none() && max_imaginary.is_none() {
+        ctx.say(format!("{rand_r}")).await?;
+    } else {
+        let min_i = min_imaginary.unwrap_or(1);
+        let max_i = max_imaginary.unwrap_or(101);
+
+        let rand_i = roll_2(min_i, max_i).await;
+
+        ctx.say(format!("{rand_r}+{rand_i}i")).await?;
+    }
+
+    Ok(())
+}
+
+async fn roll_2(mut min: i64, mut max: i64) -> i64 {
+    // getting the true min/max values
+    let temp = min;
+    min = if max < min { max } else { min };
+    max = if temp > max { temp } else { max };
+
+    let range = if max - min > 0 { max - min } else { 1 };  // double of the same number
+                                                            // returns that number
+    
+    let rand_num = ((rand::random::<i64>() % range) + range) % range;  // uses maths modulo,
+                                                                           // not modulus
+    rand_num + min  // min acts as offset
+}
+
+
 #[poise::command(prefix_command)]
 pub async fn get_leaderboard(ctx: Context<'_>, param: Option<String>) -> Result<(), Error> {
     let http = ctx.http();

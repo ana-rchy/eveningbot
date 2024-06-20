@@ -30,7 +30,9 @@ async fn main() -> Result<(), Error> {
 
 pub async fn poise_setup(shared_data: &SharedData) -> serenity::Client {
     let token = std::env::var("DISCORD_TOKEN").expect("envvar the DISCORD_TOKEN");
-    let intents = GatewayIntents::GUILDS | GatewayIntents::GUILD_MEMBERS | GatewayIntents::MESSAGE_CONTENT
+    let intents = GatewayIntents::GUILDS
+        | GatewayIntents::GUILD_MEMBERS
+        | GatewayIntents::MESSAGE_CONTENT
         | GatewayIntents::GUILD_MESSAGES;
 
     let sunset_time = shared_data.sunset_time.clone();
@@ -52,7 +54,7 @@ pub async fn poise_setup(shared_data: &SharedData) -> serenity::Client {
             })
         })
         .options(poise::FrameworkOptions {
-            commands: vec![fact_check(), get_leaderboard(), roll(), uwuify()],
+            commands: vec![fact_check(), get_leaderboard(), roll(), uwuify(), roll_ban()],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".into()),
                 ..Default::default()

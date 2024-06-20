@@ -160,3 +160,25 @@ pub async fn get_leaderboard(ctx: Context<'_>, param: Option<String>) -> Result<
 
     Ok(())
 }
+
+
+#[poise::command(slash_command, prefix_command, required_bot_permissions = "BAN_MEMBERS")]
+pub async fn roll_ban(ctx: Context<'_>) -> Result<(), Error> {
+    let roll = (rand::random::<u32>() % 1000000) + 1;
+    let roll_text = format!("roll: {roll}/1000000");
+    
+    if roll == 1000000 {
+        let member = ctx.author_member().await.unwrap();
+        member.ban_with_reason(ctx.http(), 0, "gg you won the lottery").await?;
+
+        let message =
+            format!("{roll_text}\n{} has won the lottery and been BANISHED from these sacred lands", member.user.name);
+        ctx.say(message).await?;
+    } else {
+        let message =
+            format!("{roll_text}\nno ban, try again");
+        ctx.say(message).await?;
+    }
+
+    Ok(())
+}

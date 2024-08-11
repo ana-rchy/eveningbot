@@ -1,12 +1,27 @@
 name: Deploy main to Huey-Dewey-Louie
 
 on:
+  workflow_run:
+    workflows: ["SonarQube"]
+    types:
+      - completed
   push:
     branches:
       - main
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - '.gitattributes'
+      - '.editorconfig'
+      - 'yarn.lock'
+      - 'package-lock.json'
+      - 'sonar-project.properties'
+      - 'README.md'
+      - 'docs/**'
 
 jobs:
   build-and-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository

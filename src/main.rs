@@ -1,4 +1,4 @@
-use eveningbot::{global::*, jobs, commands::*, event};
+use eveningbot::{commands::*, event, global::*, jobs};
 use poise::serenity_prelude::{self as serenity, GatewayIntents};
 use std::sync::Arc;
 use tokio_cron_scheduler::JobScheduler;
@@ -12,8 +12,9 @@ async fn main() -> Result<(), Error> {
         .build();
     simplelog::WriteLogger::init(
         log::LevelFilter::Debug,
-        log_config, 
-        std::fs::File::create("eveningbot.log").unwrap())?;
+        log_config,
+        std::fs::File::create("eveningbot.log").unwrap(),
+    )?;
 
     let shared_data = SharedData::new().await;
 
@@ -49,12 +50,19 @@ pub async fn poise_setup(shared_data: &SharedData) -> serenity::Client {
                     sunset_time,
                     root_path: assets_path,
                     evening_leaderboard,
-                    first_ge_sent
+                    first_ge_sent,
                 })
             })
         })
         .options(poise::FrameworkOptions {
-            commands: vec![fact_check(), get_leaderboard(), roll(), uwuify(), roll_ban()],
+            commands: vec![
+                fact_check(),
+                get_leaderboard(),
+                roll(),
+                uwuify(),
+                roll_ban(),
+                say(),
+            ],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".into()),
                 ..Default::default()

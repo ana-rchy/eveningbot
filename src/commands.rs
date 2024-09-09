@@ -67,7 +67,7 @@ pub async fn roll(
     if rand_r == min {
         ctx.say("CRIT FAIL. dumbass.").await?;
     } else if rand_r == max {
-        ctx.say("NAT 20 LETS GOOOOOOOOO").await?;
+        ctx.say(format!("NAT {max} LETS GOOOOOOOOO")).await?;
     }
 
     Ok(())
@@ -179,12 +179,12 @@ pub async fn roll_ban(ctx: Context<'_>) -> Result<(), Error> {
             .await?;
 
         let message = format!(
-            "{roll_text}\n{} has won the lottery and been BANISHED from these sacred lands",
+            "{roll_text}\n{} has won the lottery and been BANISHED.",
             member.user.name
         );
         ctx.say(message).await?;
     } else {
-        let message = format!("{roll_text}\nno ban, try again");
+        let message = format!("{roll_text}\nno ban. keep gambling");
         ctx.say(message).await?;
     }
 

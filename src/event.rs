@@ -106,9 +106,21 @@ pub async fn event_handler(
 
 async fn easter_egg_reacts(ctx: &serenity::Context, message: &serenity::model::channel::Message) {
     for i in EASTER_EGG_REACTS.entries() {
-        if !message.content.contains(i.0) {
+        let msg = &message.content;
+
+        if !msg.contains(i.0) {
             continue;
         }
+        
+        // dont react if word surrounded by alphabetical characters
+        let egg_index = msg.find(i.0).unwrap();
+        if (egg_index != 0 && msg.chars().nth(egg_index - 1).unwrap().is_alphabetic()) ||
+           (egg_index + i.0.len() != msg.len() && msg.chars().nth(egg_index + i.0.len()).unwrap().is_alphabetic())
+        {
+            continue;
+        }
+
+        
 
         let reaction = ReactionType::from_str(i.1).unwrap();
 

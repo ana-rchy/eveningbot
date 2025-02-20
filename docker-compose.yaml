@@ -1,5 +1,6 @@
 services:
   eveningbot:
+    container_name: eveningbot
     env_file:
       - ./.env
     build: .

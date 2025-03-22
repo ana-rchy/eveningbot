@@ -88,6 +88,22 @@ pub static EVENING_MOTD: &[&str] = &[
     "game dve tip5: gel an dylsexio diaqnosis",
     "game dev tips: stop writing bad code",
     "try out compact claustrophobia",
+    "game dev tips: state machines are so fucking useful",
+    "game dev tips: add `return 0;` to main, EVERY SINGLE TIME.",
+    "game dev tips: \"security through obscurity\" doesnt work",
+    "game dev tips: if youre gonna commit to making a game, make sure its a game/genre you *actually* wanna make",
+    "game dev tips: make CIA method blackpowder",
+    "perfect time for some xonotic",
+    "portal 3",
+    "Just went number 3",
+    "unity? more like, uni pee ahah",
+    "Stand ready for my arrival, sun.",
+    "\\*kicks you in the balls\\*",
+    "```\n     REMEMBER:\nBIG DOG IS WATCHING\n```",
+    "lesbiab,,",
+    "Sent from my iPhone",
+    "I can't do this anymore.",
+    "did i ever tell you the definition of insanity?",
 ];
 
 pub static NIGHT_MOTD: &[&str] = &[
@@ -127,6 +143,14 @@ pub static NIGHT_MOTD: &[&str] = &[
     "*weeds smoke*",
     "remember kids: drugs are fun",
     "what if instead of eveningbot it was freakybot, and instead of sending messages i sent my source code 😳",
+    "SPECIAL MISSION FROM COMMANDER GOON INCOMING",
+    "I will\n*fuck*\n   you",
+    "Favourite Spongebob Quote",
+    "Fuck da Discord Ops",
+    "email me          send me an email at\n\n-# thanks",
+    "these Extra-Terrestrials are Jerk-a-Lerkin' on my Thing!",
+    "straight up \"cubin it\"",
+    "why do they call it go-dot if you come to it 😂",
 ];
 
 pub static GOOD_EVENINGS: &[&str] = &[
@@ -135,6 +159,7 @@ pub static GOOD_EVENINGS: &[&str] = &[
     "dobry wieczór",
     "tenpo pimeja pona",
     "pimeja pona",
+    "mun pona",
     "buenas noches",
     "bonsoir",
     "こんばんは",
